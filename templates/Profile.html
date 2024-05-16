@@ -1,0 +1,19 @@
+{% extends 'Base.html' %}
+{% block content %}
+{% load static %}
+<p>{{ user.id }}</p>
+    <p>{{ user.username }}</p>
+<p>{{ user.first_name }}</p>
+<p>{{ user.last_name }}</p>
+<p>{{ user.email }}</p>
+<p>{{ user.date_joined }}</p>
+<p>{{ client.profile_pic }}</p>
+    <p>{{ client.last_login }}</p>
+    
+    {% for file in Files %}
+        <p>{{ file.file }}</p>
+        <p>{{ file.describe }}</p>
+        <p>{{ file.catelory }}</p>
+        <p>{{ file.uploaded_at }}</p>
+    {% endfor %}
+{% endblock %}
