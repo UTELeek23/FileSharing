@@ -33,4 +33,5 @@ urlpatterns = ([
     #Client Views
     path('Profile/<str:user_id>/', ClientViews.profile, name='Profile'),
     path('ViewFiles/<str:category>/<str:file_id>', ClientViews.view_file, name='ViewFiles'),
+    path('list_files/', views.list_files, name='list_files')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))

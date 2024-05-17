@@ -5,9 +5,10 @@ from django.contrib import messages
 from pathlib import Path
 from .forms import *
 from django.core.files.storage import FileSystemStorage
-from .models import CustomUser, Client
+from .models import CustomUser, Client, File
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from .pdf2img import pdf2img
 
 @login_required
 def AddUser(request):
@@ -61,12 +62,13 @@ def Filesave(request):
             if 'pdf' not in file.content_type:
                 messages.error(request, 'Only PDF files are allowed!')
                 return render(request, 'UploadFile.html', {'form': form})
-            tmp_name = str(file.name.encode('utf-8').hex())
+            tmp_name = str(hash(file.name.encode('utf-8'))) + '.pdf'
             # print(tmpname)
             filename = fs.save(tmp_name, file)
+            imgname = pdf2img('media/documents/' + category + '/' + tmp_name, 'static/Media/', tmp_name.replace('.pdf', ''))
             try:
                 file = File(file=filename, Name=file.name, describe=description, category=category,
-                            uploaded_by=Client.objects.get(user=request.user.id))
+                            uploaded_by=Client.objects.get(user=request.user.id), picture= imgname)
                 file.save()
                 messages.success(request, 'File Uploaded Successfully')
                 return HttpResponseRedirect('/UploadFile')

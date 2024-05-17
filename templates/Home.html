@@ -1,6 +1,7 @@
 {% extends 'Base.html' %}
 {% block content %}
     {% load static %}
+
     <div class="search-form">
 <form>
     {% csrf_token %}
@@ -27,62 +28,26 @@
 <h4 bold="true">Some file may you need</h4>
 <div class="container-files">
 
-    <div class="card" style="width: 18rem;">
-      <img src="{% static 'Media/Logo.jpg' %}" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
+    {% for file in Files %}
+    <div class="card", style="width: 18rem;">
+        <img src="{% static 'Media/' %}{{ file.picture }}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{ file.Name }}</h5>
+            <p class="card-text">{{ file.describe }}</p>
+            <a href="{% url 'ViewFiles' category=file.category file_id=file.id %}" class="btn btn-primary">View detail</a>
+        </div>
     </div>
-    <div class="card" style="width: 18rem;">
-      <img src="..." class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-    <div class="card" style="width: 18rem;">
-      <img src="..." class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-<div class="card" style="width: 18rem;">
-      <img src="..." class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-<div class="card" style="width: 18rem;">
-      <img src="..." class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-<div class="card" style="width: 18rem;">
-      <img src="..." class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-<div class="card" style="width: 18rem;">
-      <img src="..." class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
+        
+    {% endfor %}
+{#    <div class="card" style="width: 18rem;">#}
+{#      <img src="{% static 'Media/Logo.jpg' %}" class="card-img-top" alt="...">#}
+{#      <div class="card-body">#}
+{#        <h5 class="card-title">Card title</h5>#}
+{#        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>#}
+{#        <a href="#" class="btn btn-primary">Go somewhere</a>#}
+{#      </div>#}
+{#    </div>#}
+
 
 </div>
 {% endblock %}

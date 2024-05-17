@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from pathlib import Path
 from django.contrib.auth.decorators import login_required
-from .models import Client
+from .models import Client, File
 import os
 
 # Create your views here.
@@ -20,7 +20,8 @@ def get_categories():
 
 def home(request):
     categories = get_categories()
-    return render(request, 'home.html', {'categories': categories})
+    Files = File.objects.order_by('uploaded_at')[:10]
+    return render(request, 'home.html', {'categories': categories, 'Files': Files})
 
 def dologin(request):
     if request.method == 'POST':
@@ -46,3 +47,8 @@ def dologout(request):
 def test(request):
     print(Path(__file__).resolve().parent.parent.parent)
     return render(request, 'Login.html')
+
+def list_files(request):
+    Files = File.objects.all()[:10]
+    print(Files)
+    return render(request, 'Login.html', {'Files': Files})
