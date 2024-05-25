@@ -1,0 +1,47 @@
+{% extends 'Base.html' %}
+{% block content %}
+{% load static %}
+<div class="manage-files">
+<table id="manage-files">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Describe</th>
+        <th>Category</th>
+        <th>Uploaded at</th>
+        <th>Upload by</th>
+        <th>Actions</th>
+    </tr>
+    {% for file in Files %}
+    <tr>
+        <td>{{ file.id }}</td>
+        <td>{{ file.Name }}</td>
+        <td>{{ file.describe }}</td>
+        <td>
+            {% for category in categories %}
+                {% if category.id == file.category_id %}
+                    {{ category.category }}
+                {% endif %}
+            {% endfor %}
+        </td>
+        <td>{{ file.uploaded_at }}</td>
+        <td>
+            {% for user in users %}
+                {% if user.id == file.uploaded_by_id %}
+                    {{ user.username }}
+                {% endif %}
+            {% endfor %}
+        </td>
+        <td>
+            {% if file.visible == True %}
+                <button type="button" class="btn btn-primary"><a href="{% url 'change_status' file_id=file.id %}" style="text-decoration: none; color: white">Visible</a></button>
+            {% else %}
+                <button type="button" class="btn btn-secondary"><a href="{% url 'change_status' file_id=file.id %}" style="text-decoration: none; color: white">Hidden</a></button>
+            {% endif %}
+            <button type="button" class="btn btn-danger" style="margin-top: 5px"><a>Delete</a></button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+{% endblock %}

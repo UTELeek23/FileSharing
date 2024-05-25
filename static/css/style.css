@@ -63,9 +63,6 @@ footer{
     display: flex;
     justify-content: space-around;
     padding: 10px;
-    border: lightgreen;
-    border-style: solid;
-    background: lightgreen;
 }
 
 
@@ -103,7 +100,34 @@ footer{
 }
 
 .result-box ul li:hover{
-    background: #9ef3ff;
+    background: lightblue;
 }
 
 
+.container{
+    padding: 10px;
+    margin-top: 10px;
+}
+
+#manage-files {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#manage-files td, #manage-files th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#manage-files tr:nth-child(even){background-color: #f2f2f2;}
+
+#manage-files tr:hover {background-color: #ddd;}
+
+#manage-files th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}

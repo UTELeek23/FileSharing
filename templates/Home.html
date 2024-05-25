@@ -5,7 +5,6 @@
     <div class="search">
         <span class="material-symbols-outlined">search</span>
         <input type="text" placeholder="Search for files" name="search" class="search-input" id="input-box">
-        <button type="submit" class="btn btn-success">search</button>
     </div>
     <div class="result-box">
     </div>
@@ -45,18 +44,17 @@
 
 </div>
 <div class="page_num">
-{#  <ul class="pagination">#}
-{#    <li class="page-item"><a class="page-link" href="#">Previous</a></li>#}
-{#    {% for i in NumberOfFiles %}#}
-{#        <li class="page-item"><a class="page-link" href="#">{{ i }}</a></li>#}
-{#    {% endfor %}#}
-{#    <li class="page-item"><a class="page-link" href="#">Next</a></li>#}
-{#  </ul>#}
+  <ul class="pagination">
+    {% for i in NumberOfFiles %}
+        <li class="page-item"><a class="page-link" href="{% url 'page_list' page=i %}">{{ i }}</a></li>
+    {% endfor %}
+  </ul>
 </div>
 {% endblock %}
 {% block custom_js %}
 <script>
 window.fileNames = {{ FileName|safe }};
+window.JsonFiles = {{ jsonfile|safe}}
     </script>
     <script src="{% static 'js/autocomplete.js' %}"></script>
 {% endblock %}

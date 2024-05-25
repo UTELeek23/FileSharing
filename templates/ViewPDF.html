@@ -1,7 +1,9 @@
 {% extends 'Base.html' %}
 {% block content %}
     <div class="PDF_file">
+        <h5>{{ file.Name }}</h5>
+        <a href="{{ file_path }}" download><button class="btn btn-primary">Download</button></a>
                     <blockquote class="text-center"></blockquote>
-                    <iframe src="{{file_path}}#toolbar=0&navpanes=0&scrollbar=0" width="100%" height="1000px">file đề</iframe>
+                    <iframe src="{{file_path}}#toolbar=0&navpanes=0&scrollbar=0&" width="100%" height="1000px"></iframe>
     </div>
 {% endblock %}

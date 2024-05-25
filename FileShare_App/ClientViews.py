@@ -18,12 +18,11 @@ def profile(request, user_id):
         return render(request, 'profile.html', context)
     else:
         client = Client.objects.get(user=user)
-        Files = File.objects.filter(uploaded_by=client)
+        Files = File.objects.filter(uploaded_by=user)
         context = {'user': user, 'client': client, 'user_id': user_id, 'Files': Files}
         return render(request, 'profile.html', context)
 
 def view_file(request, file_id):
-    print('id: ' + str(file_id))
     fs = FileSystemStorage()
     file = File.objects.get(id=file_id)
     filename = str(file.file)

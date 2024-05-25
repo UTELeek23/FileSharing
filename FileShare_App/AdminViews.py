@@ -71,7 +71,7 @@ def Filesave(request):
             imgname = pdf2img('media/' + tmp_name, 'static/Media/', tmp_name.replace('.pdf', ''))
             try:
                 file = File(file=filename, Name=file.name, describe=description, category=Category.objects.get(category=category),
-                            uploaded_by=Client.objects.get(user=request.user.id), thumbnail = imgname)
+                            uploaded_by=CustomUser.objects.get(id=request.user.id), thumbnail = imgname)
                 file.save()
                 messages.success(request, 'File Uploaded Successfully')
                 return HttpResponseRedirect('/UploadFile')
@@ -102,3 +102,19 @@ def AddCategory(request):
         except:
             messages.error(request, 'Category Addition Failed')
             return HttpResponseRedirect('/Profile/' + str(request.user.id))
+
+def manage_files(request):
+    Files = File.objects.all()
+    users = CustomUser.objects.all()
+    return render(request, 'manage_files.html', {'Files': Files, 'users': users})
+
+def change_status(request, file_id):
+    file = File.objects.get(id=file_id)
+    file.visible = not file.visible
+    file.save()
+    return HttpResponseRedirect('/manage_files')
+
+def delete_file(request, file_id):
+    file = File.objects.get(id=file_id)
+    file.delete()
+    return HttpResponseRedirect('/manage_files')

@@ -35,7 +35,7 @@ class File(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     thumbnail = models.FileField(blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    uploaded_by = models.ForeignKey(Client, on_delete=models.CASCADE)
+    uploaded_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     visible = models.BooleanField(default=True)
     objects = models.Manager()
     def __str__(self):
