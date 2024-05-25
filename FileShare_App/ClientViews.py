@@ -5,27 +5,32 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import CustomUser, Client, File
 from django.core.files.storage import FileSystemStorage
+import os
+from FileSharing import settings
+from django.views.decorators.clickjacking import xframe_options_sameorigin, xframe_options_exempt
 
 
 @login_required
 def profile(request, user_id):
     user = CustomUser.objects.get(id=user_id)
-    client = Client.objects.get(user=user)
-    Files = File.objects.filter(uploaded_by=client)
-    context = {'user': user, 'client': client, 'user_id': user_id, 'Files': Files}
-    return render(request, 'profile.html', context)
+    if user.is_superuser:
+        context = {'user': user}
+        return render(request, 'profile.html', context)
+    else:
+        client = Client.objects.get(user=user)
+        Files = File.objects.filter(uploaded_by=client)
+        context = {'user': user, 'client': client, 'user_id': user_id, 'Files': Files}
+        return render(request, 'profile.html', context)
 
-
-def view_file(request, category ,file_id):
-    print("ok")
-    fs = FileSystemStorage(location='media/documents/' + category)
+def view_file(request, file_id):
+    print('id: ' + str(file_id))
+    fs = FileSystemStorage()
     file = File.objects.get(id=file_id)
     filename = str(file.file)
-    print(filename)
+
     if fs.exists(filename):
-        with fs.open(filename) as f:
-            response = HttpResponse(f, content_type='application/pdf')
-            response['Content-Disposition'] = 'inline; filename=' + filename
-            return response
+        file_path = fs.url(filename)
+        context = {'file': file, 'file_path': file_path}
+        return render(request, 'ViewPDF.html', context)
     else:
         return HttpResponse('File Not Found')

@@ -25,7 +25,7 @@
         <img src="{% static 'Media/Logo.jpg' %}" alt="logo" width="30" height="30" class="d-inline-block align-text-top" id="logo">
         Secui FileSharing
     </a>
-
+dop
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
@@ -39,10 +39,10 @@
             Categories
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">some things</a></li>
+              {% for category in categories %}
+                <li><a class="dropdown-item" href="#">{{ category.category }}</a></li>
+                {% endfor %}
+            
           </ul>
         </li>
       </ul>
@@ -89,6 +89,7 @@
     </div>
   </div>
 </nav>
+
 <!--Search bar-->
 {#<div class="search-form">#}
 {#<form>#}
@@ -114,11 +115,14 @@
 {#    {% endif %}#}
 {#</div>#}
 
+
 <div class="container">
     {% block content %}
       
     {% endblock  %}
 </div>
+{% block custom_js %}
+{% endblock %}
 </body>
 <br>
 <footer>

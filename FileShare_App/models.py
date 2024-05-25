@@ -24,14 +24,20 @@ class Client(models.Model):
     def __str__(self):
         return self.user.username
 
+class Category(models.Model):
+    category = models.CharField(max_length=100)
+    objects = models.Manager()
+
 class File(models.Model):
     file = models.FileField(upload_to='files/')
     Name = models.CharField(max_length=100)
     describe = models.TextField(max_length=200)
-    category = models.CharField(max_length=100, blank=True, null=True)
-    picture = models.FileField(blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    thumbnail = models.FileField(blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey(Client, on_delete=models.CASCADE)
+    visible = models.BooleanField(default=True)
     objects = models.Manager()
     def __str__(self):
         return self.file.name
+

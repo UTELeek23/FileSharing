@@ -1,16 +1,14 @@
 {% extends 'Base.html' %}
 {% block content %}
     {% load static %}
-
-    <div class="search-form">
-<form>
-    {% csrf_token %}
+<div class="search-form">
     <div class="search">
         <span class="material-symbols-outlined">search</span>
-        <input type="text" placeholder="Search for files" name="search" class="search-input">
+        <input type="text" placeholder="Search for files" name="search" class="search-input" id="input-box">
         <button type="submit" class="btn btn-success">search</button>
     </div>
-</form>
+    <div class="result-box">
+    </div>
 </div>
 <!--End of search bar-->
 <div class="message-login">
@@ -30,24 +28,35 @@
 
     {% for file in Files %}
     <div class="card", style="width: 18rem;">
-        <img src="{% static 'Media/' %}{{ file.picture }}" class="card-img-top" alt="...">
+        <img src="{% static 'Media/' %}{{ file.thumbnail }}" class="card-img-top" alt="thumbnail">
         <div class="card-body">
             <h5 class="card-title">{{ file.Name }}</h5>
-            <p class="card-text">{{ file.describe }}</p>
-            <a href="{% url 'ViewFiles' category=file.category file_id=file.id %}" class="btn btn-primary">View detail</a>
+            {% for category in categories %}
+                {% if category.id == file.category_id %}
+                    <p class="card-text">Category: {{ category.category }}</p>
+                {% endif %}
+            {% endfor %}
+            <p class="card-text">Describe: {{ file.describe }}</p>
+            <a href="{% url 'ViewFiles' file_id=file.id %}" class="btn btn-primary">View detail</a>
         </div>
     </div>
-        
-    {% endfor %}
-{#    <div class="card" style="width: 18rem;">#}
-{#      <img src="{% static 'Media/Logo.jpg' %}" class="card-img-top" alt="...">#}
-{#      <div class="card-body">#}
-{#        <h5 class="card-title">Card title</h5>#}
-{#        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>#}
-{#        <a href="#" class="btn btn-primary">Go somewhere</a>#}
-{#      </div>#}
-{#    </div>#}
 
+    {% endfor %}
 
 </div>
+<div class="page_num">
+{#  <ul class="pagination">#}
+{#    <li class="page-item"><a class="page-link" href="#">Previous</a></li>#}
+{#    {% for i in NumberOfFiles %}#}
+{#        <li class="page-item"><a class="page-link" href="#">{{ i }}</a></li>#}
+{#    {% endfor %}#}
+{#    <li class="page-item"><a class="page-link" href="#">Next</a></li>#}
+{#  </ul>#}
+</div>
+{% endblock %}
+{% block custom_js %}
+<script>
+window.fileNames = {{ FileName|safe }};
+    </script>
+    <script src="{% static 'js/autocomplete.js' %}"></script>
 {% endblock %}

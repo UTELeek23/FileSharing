@@ -1,6 +1,19 @@
 {% extends 'Base.html' %}
 {% block content %}
 {% load static %}
+    <div class="message-login">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="alert alert-danger" style="margin-top:10px; text-align: center">{{ message }}</div>
+    {% endif %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success" style="margin-top:10px; text-align: center">{{ message }}</div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+</div>
+    {% if user.is_superuser != 1 %}
 <p>{{ user.id }}</p>
     <p>{{ user.username }}</p>
 <p>{{ user.first_name }}</p>
@@ -16,4 +29,35 @@
         <p>{{ file.catelory }}</p>
         <p>{{ file.uploaded_at }}</p>
     {% endfor %}
+    {% else %}
+{# modal add category#}
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AddCategory"> Add Category </button>
+<div class="modal" id="AddCategory">
+          <div class="modal-dialog">
+            <div class="modal-content">
+        
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h4 class="modal-title">Add Category</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+        
+              <!-- Modal body -->
+              <div class="modal-body">
+                <form action="{% url 'AddCategory' %}" method="POST">
+                    {% csrf_token %}
+                    <h4>Category's name</h4>
+                    <input type="text" name="Category" class="form-control" required>
+                    <div class="modal-footer">
+                    <button class="btn btn-success" type="submit">Add</button>
+                     <span style="margin-top: 10px"></span>   
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    {% endif %}
 {% endblock %}

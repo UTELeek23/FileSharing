@@ -32,6 +32,8 @@ urlpatterns = ([
     path('Filesave/', AdminViews.Filesave, name='Filesave'),
     #Client Views
     path('Profile/<str:user_id>/', ClientViews.profile, name='Profile'),
-    path('ViewFiles/<str:category>/<str:file_id>', ClientViews.view_file, name='ViewFiles'),
-    path('list_files/', views.list_files, name='list_files')
+    path('ViewFiles/<int:file_id>', ClientViews.view_file, name='ViewFiles'),
+    path('list_files/', views.list_files, name='list_files'),
+    path('AddCategory/', AdminViews.AddCategory, name='AddCategory'),
+    path('view_API/', views.view_API, name='view_API'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))

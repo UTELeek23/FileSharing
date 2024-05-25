@@ -1,6 +1,6 @@
 .search{
     --padding: 14px;
-    width: max-content;
+    width: 100%;
     display: flex;
     flex: 1;
     align-items: center;
@@ -16,12 +16,16 @@
     outline: none;
     border: none;
     background: transparent;
-    width: 300px;
+    width: 100%;
+    flex: 1;
 }
 .search-form{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    flex-direction: column;
     padding: 25px;
+    width: 50%;
+    margin: 0 auto;
 }
 
 .container-files{
@@ -55,3 +59,51 @@ footer{
     text-align: center;
     font-size: 10px;
 }
+.page_num{
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    border: lightgreen;
+    border-style: solid;
+    background: lightgreen;
+}
+
+
+.left-bar{
+    float: left;
+    width: 200px;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+.result-box{
+    display: flex;
+    flex: 1;
+    margin-top: 5px;
+    width: 85%;
+    margin: 0 auto;
+    overflow-y: scroll;
+
+}
+
+.result-box ul{
+    border-top: 1px solid #ccc;
+    padding: 10px 10px;
+    background: #f6f6f6;
+    width: 100%;
+}
+
+.result-box ul li{
+    list-style: none;
+    border-radius: 5px;
+    padding: 10px 10px;
+    cursor: pointer;
+    background: #c9c9c9;
+    margin-top: 5px;
+}
+
+.result-box ul li:hover{
+    background: #9ef3ff;
+}
+
+
