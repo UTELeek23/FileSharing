@@ -30,6 +30,8 @@ urlpatterns = ([
     path('AddUser/', AdminViews.AddUserSubmit, name='SaveUser'),
     path('UploadFile/', AdminViews.UploadFile, name='UploadFile'),
     path('Filesave/', AdminViews.Filesave, name='Filesave'),
+    path('manage_users/', AdminViews.manage_accounts, name='manage_users'),
+    path('delete_user/<str:user_id>/', AdminViews.del_account, name='delete_user'),
     #Client Views
     path('Profile/<str:user_id>/', ClientViews.profile, name='Profile'),
     path('ViewFiles/<int:file_id>', ClientViews.view_file, name='ViewFiles'),

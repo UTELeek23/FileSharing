@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from pathlib import Path
@@ -10,7 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from .pdf2img import pdf2img
 from FileSharing import settings
-
+import logging
+from django.shortcuts import get_object_or_404, redirect
 
 def AddUser(request):
     form = AddUserForm()
@@ -50,6 +51,9 @@ def UploadFile(request):
     form = UploadFileForm()
     return render(request, 'UploadFile.html', {'form': form})
 
+
+logger = logging.getLogger(__name__)
+@login_required
 def Filesave(request):
     if request.method != 'POST':
         return HttpResponse('Invalid Request')
@@ -81,7 +85,7 @@ def Filesave(request):
         else:
             messages.error(request, 'Invalid Form')
             return render(request, 'UploadFile.html', {'form': form})
-
+@login_required
 def AddCategory(request):
     if request.method != 'POST':
         return HttpResponse('Invalid Request')
@@ -102,19 +106,63 @@ def AddCategory(request):
         except:
             messages.error(request, 'Category Addition Failed')
             return HttpResponseRedirect('/Profile/' + str(request.user.id))
-
+@login_required
 def manage_files(request):
     Files = File.objects.all()
     users = CustomUser.objects.all()
     return render(request, 'manage_files.html', {'Files': Files, 'users': users})
-
+@login_required
 def change_status(request, file_id):
     file = File.objects.get(id=file_id)
     file.visible = not file.visible
     file.save()
     return HttpResponseRedirect('/manage_files')
-
+@login_required
 def delete_file(request, file_id):
-    file = File.objects.get(id=file_id)
-    file.delete()
+    user = CustomUser.objects.get(id=request.user.id)
+    if user.is_superuser:
+        file = File.objects.get(id=file_id)
+        path = Path(settings.MEDIA_ROOT) / file.file.name
+        path.unlink()
+        file.delete()
+        return HttpResponseRedirect('/manage_files')
+    else:
+        file = File.objects.get(id=file_id)
+        if file.uploaded_by == user:
+            file.delete()
+            return HttpResponseRedirect('/Profile/' + str(request.user.id))
+        else:
+            return HttpResponseRedirect('/manage_files')
     return HttpResponseRedirect('/manage_files')
+
+@login_required
+def manage_accounts(request):
+    users = CustomUser.objects.all()
+    return render(request, 'manage_accounts.html', {'users': users})
+
+@login_required
+def del_account(request, user_id):
+    # Ensure the user is authenticated and has permission to delete the account
+    if not request.user.is_authenticated or not request.user.has_perm('auth.delete_user'):
+        return HttpResponseForbidden("You do not have permission to delete this account.")
+
+    user = get_object_or_404(CustomUser, id=user_id)
+    client = get_object_or_404(Client, user=user)
+
+    try:
+        if client.profile_pic:
+            profile_pic_path = os.path.join(settings.MEDIA_ROOT, 'avatars', client.profile_pic.name)
+            if os.path.isfile(profile_pic_path):
+                os.remove(profile_pic_path)
+
+        user.delete()
+
+        # Log the account deletion
+        logger.info(f"User {user_id} and associated client data deleted successfully.")
+        messages.success(request, 'User deleted successfully.')
+
+    except Exception as e:
+        logger.error(f"Error deleting user {user_id}: {e}")
+        return HttpResponseForbidden("An error occurred while deleting the account.")
+
+    return redirect('/')

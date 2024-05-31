@@ -1,0 +1,89 @@
+{% extends 'Base.html' %}
+{% block content %}
+{% load static %}
+<div class="manage-users">
+<table id="user-table">
+    <thead>
+        <tr>
+            <th onclick="sortTable(0)">ID</th>
+            <th onclick="sortTable(1)">Username</th>
+            <th onclick="sortTable(2)">First Name</th>
+            <th onclick="sortTable(3)">Last Name</th>
+            <th onclick="sortTable(4)">Date Joined</th>
+            <th onclick="sortTable(5)">Last Login</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.last_name }}</td>
+            <td>{{ user.date_joined }}</td>
+            <td>{{ user.client.last_login }}</td>
+            <td>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal{{ user.id }}">Delete Account</button>
+                <div class="modal fade" id="deleteAccountModal{{ user.id }}" tabindex="-1" aria-labelledby="deleteAccountModalLabel{{ user.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="deleteAccountModalLabel{{ user.id }}">Delete Account</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete this account?</p>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <a href="{% url 'delete_user' user_id=user.id %}" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}
+{% block custom_js %}
+<script>
+function sortTable(columnIndex) {
+    const table = document.getElementById("user-table");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    // Determine the current sort direction
+    const currentIsAscending = table.getAttribute("data-sort-dir") === "asc";
+    const newDirection = currentIsAscending ? "desc" : "asc";
+    table.setAttribute("data-sort-dir", newDirection);
+
+    // Sort rows based on the selected column
+    rows.sort((rowA, rowB) => {
+        const cellA = rowA.cells[columnIndex].textContent.trim();
+        const cellB = rowB.cells[columnIndex].textContent.trim();
+
+        if (columnIndex === 0) { // Assuming column 0 is the ID column and should be sorted numerically
+            return currentIsAscending ? cellA - cellB : cellB - cellA;
+        } else {
+            if (currentIsAscending) {
+                return cellA > cellB ? 1 : -1;
+            } else {
+                return cellA < cellB ? 1 : -1;
+            }
+        }
+    });
+
+    // Append the sorted rows back into the tbody
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+// Add initial sort direction attribute to the table
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("manage-files").setAttribute("data-sort-dir", "asc");
+});
+</script>
+
+
+{% endblock %}

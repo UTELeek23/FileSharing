@@ -3,15 +3,18 @@
 {% load static %}
 <div class="manage-files">
 <table id="manage-files">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Describe</th>
-        <th>Category</th>
-        <th>Uploaded at</th>
-        <th>Upload by</th>
-        <th>Actions</th>
-    </tr>
+    <thead>
+        <tr>
+            <th onclick="sortTable(0)">ID</th>
+            <th onclick="sortTable(1)">Name</th>
+            <th onclick="sortTable(2)">Describe</th>
+            <th onclick="sortTable(3)">Category</th>
+            <th onclick="sortTable(4)">Uploaded at</th>
+            <th onclick="sortTable(5)">Upload by</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+<tbody>
     {% for file in Files %}
     <tr>
         <td>{{ file.id }}</td>
@@ -38,10 +41,51 @@
             {% else %}
                 <button type="button" class="btn btn-secondary"><a href="{% url 'change_status' file_id=file.id %}" style="text-decoration: none; color: white">Hidden</a></button>
             {% endif %}
-            <button type="button" class="btn btn-danger" style="margin-top: 5px"><a>Delete</a></button>
+            <button type="button" class="btn btn-danger" style="margin-top: 5px"><a href="{% url 'delete_file' file_id=file.id %}" style="text-decoration: none; color: white">Delete</a></button>
         </td>
     </tr>
     {% endfor %}
+</tbody>
 </table>
 </div>
+{% endblock %}
+{% block custom_js %}
+<script>
+function sortTable(columnIndex) {
+    const table = document.getElementById("manage-files");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    // Determine the current sort direction
+    const currentIsAscending = table.getAttribute("data-sort-dir") === "asc";
+    const newDirection = currentIsAscending ? "desc" : "asc";
+    table.setAttribute("data-sort-dir", newDirection);
+
+    // Sort rows based on the selected column
+    rows.sort((rowA, rowB) => {
+        const cellA = rowA.cells[columnIndex].textContent.trim();
+        const cellB = rowB.cells[columnIndex].textContent.trim();
+
+        if (columnIndex === 0) { // Assuming column 0 is the ID column and should be sorted numerically
+            return currentIsAscending ? cellA - cellB : cellB - cellA;
+        } else {
+            if (currentIsAscending) {
+                return cellA > cellB ? 1 : -1;
+            } else {
+                return cellA < cellB ? 1 : -1;
+            }
+        }
+    });
+
+    // Append the sorted rows back into the tbody
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+// Add initial sort direction attribute to the table
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("manage-files").setAttribute("data-sort-dir", "asc");
+});
+</script>
+
+
 {% endblock %}

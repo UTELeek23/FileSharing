@@ -14,25 +14,94 @@
     {% endif %}
 </div>
     {% if user.is_superuser != 1 %}
-<p>{{ user.id }}</p>
-    <p>{{ user.username }}</p>
-<p>{{ user.first_name }}</p>
-<p>{{ user.last_name }}</p>
-<p>{{ user.email }}</p>
-<p>{{ user.date_joined }}</p>
-<p>{{ client.profile_pic }}</p>
-    <p>{{ client.last_login }}</p>
-    
-    {% for file in Files %}
-        <p>{{ file.file }}</p>
-        <p>{{ file.describe }}</p>
-        <p>{{ file.catelory }}</p>
-        <p>{{ file.uploaded_at }}</p>
-    {% endfor %}
+<style>
+    .profile-pic {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #ddd;
+    }
+    .file-info {
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+</style>
+<section>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        {% if client.profile_pic %}
+                            <img src="/media/avatars/{{ client.profile_pic.name }}" alt="Profile Picture" class="profile-pic mb-3">
+                        {% else %}
+                            <img src="#" alt="Profile Picture" class="profile-pic mb-3">
+                        {% endif %}
+                        <h5 class="my-3">{{ user.get_full_name }}</h5>
+                        <p class="text-muted mb-1"><b>User name: </b> {{ user.username }}</p>
+                        <p class="text-muted mb-1"><b>Email: </b> {{ user.email }}</p>
+                        <p class="text-muted mb-1"><b>Date Joined: </b> {{ user.date_joined }}</p>
+                        <p class="text-muted mb-1"><b>Last Login: </b> {{ client.last_login }}</p>
+                        <button class="btn btn-danger mt-3" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>Files</h2>
+                    </div>
+                    <div class="card-body">
+                        {% for file in Files %}
+                            <div class="file-info">
+                                <p><strong>Name:</strong> {{ file.Name }}</p>
+                                <p><strong>Describe:</strong> {{ file.describe }}</p>
+                                <p><strong>Category:</strong>
+                                    {% for category in categories %}
+                                        {% if category.id == file.category_id %}
+                                            {{ category.category }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                                <p><strong>Uploaded At:</strong> {{ file.uploaded_at }}</p>
+                                <a href="{% url 'delete_file' file_id=file.id %}" class="btn btn-danger btn-sm">Delete</a>
+                            </div>
+                        {% empty %}
+                            <p>No files found.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAccountModalLabel">Confirm Account Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete your account? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="{% url 'del_account'%}" class="btn btn-danger">Delete Account</a>
+            </div>
+        </div>
+    </div>
+</div>
     {% else %}
 {# modal add category#}
 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AddCategory"> Add Category </button>
         <button type="button" class="btn btn-success" style="margin-left: 15px"><a href="{% url 'manage_files' %}" style="text-decoration: none; color: white">Manage Files</a></button>
+        <button type="button" class="btn btn-success" style="margin-left: 15px"><a href="{% url 'manage_users' %}" style="text-decoration: none; color: white">Manage Users</a></button>
 <div class="modal" id="AddCategory">
           <div class="modal-dialog">
             <div class="modal-content">

@@ -8,6 +8,7 @@ from django.core.files.storage import FileSystemStorage
 import os
 from FileSharing import settings
 from django.views.decorators.clickjacking import xframe_options_sameorigin, xframe_options_exempt
+from django.shortcuts import get_object_or_404
 
 
 @login_required
@@ -33,3 +34,6 @@ def view_file(request, file_id):
         return render(request, 'ViewPDF.html', context)
     else:
         return HttpResponse('File Not Found')
+
+
+
