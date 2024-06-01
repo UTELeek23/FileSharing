@@ -122,13 +122,25 @@ def delete_file(request, file_id):
     user = CustomUser.objects.get(id=request.user.id)
     if user.is_superuser:
         file = File.objects.get(id=file_id)
-        path = Path(settings.MEDIA_ROOT) / file.file.name
-        path.unlink()
+        path_file = os.path.join(settings.MEDIA_ROOT, file.file.name)
+        if os.path.isfile(path_file):
+            os.remove(path_file)
+        path_thumbnail = os.path.join(settings.STATIC_URL, 'Media', str(file.thumbnail))
+        print(path_thumbnail)
+        if os.path.isfile(path_thumbnail):
+            os.remove(path_thumbnail)
         file.delete()
         return HttpResponseRedirect('/manage_files')
     else:
         file = File.objects.get(id=file_id)
         if file.uploaded_by == user:
+            path_file = os.path.join(settings.MEDIA_ROOT, file.file.name)
+            if os.path.isfile(path_file):
+                os.remove(path_file)
+            path_thumbnail = os.path.join(settings.STATIC_URL, 'Media', str(file.thumbnail))
+            print(path_thumbnail)
+            if os.path.isfile(path_thumbnail):
+                os.remove(path_thumbnail)
             file.delete()
             return HttpResponseRedirect('/Profile/' + str(request.user.id))
         else:
@@ -148,13 +160,20 @@ def del_account(request, user_id):
 
     user = get_object_or_404(CustomUser, id=user_id)
     client = get_object_or_404(Client, user=user)
-
+    files = File.objects.filter(uploaded_by=user)
     try:
         if client.profile_pic:
-            profile_pic_path = os.path.join(settings.MEDIA_ROOT, 'avatars', client.profile_pic.name)
+            profile_pic_path = os.path.join(settings.MEDIA_ROOT, 'avatars', str(client.profile_pic.name))
             if os.path.isfile(profile_pic_path):
                 os.remove(profile_pic_path)
-
+        for file in files:
+            file_path = os.path.join(settings.MEDIA_ROOT, file.file.name)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+            thumbnail_path = os.path.join(settings.STATIC_URL, 'Media', str(file.thumbnail))
+            if os.path.isfile(thumbnail_path):
+                os.remove(thumbnail_path)
+            file.delete()
         user.delete()
 
         # Log the account deletion
